@@ -152,12 +152,6 @@ Conda provides pre-compiled binaries for GDAL/Fiona, avoiding build failures on 
 - Check layer names: `firep24_1` (wildfires) or `rxburn24_1` (prescribed burns)
 - Confirm EPSG 3310 is recognized: `gdf.crs` should show `EPSG:3310`
 
-## Contributing
-
-To extend this project:
-1. Add new analysis notebooks in `notebooks/`
-2. Store processed data in `data/processed/`
-3. Update `requirements.txt` for new dependencies
 
 ## References
 
@@ -166,14 +160,3 @@ To extend this project:
 - [ipywidgets (Interactive Controls)](https://ipywidgets.readthedocs.io/)
 - [EPSG:3310 (California Albers)](https://epsg.io/3310)
 
-## License
-
-Specify your project license here (e.g., MIT, CC0). California fire perimeter data source may have its own license—verify with original data provider.
-
-## Contact
-
-For questions or issues, open an issue or contact the project maintainer.
-
----
-
-**Last Updated**: February 2026
