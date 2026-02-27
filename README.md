@@ -17,6 +17,7 @@ This project analyzes wildfire and prescribed burn perimeter data from Californi
   - `rxburn24_1`: Prescribed burn perimeters
 - **Coordinate System**: EPSG 3310 (California Albers projection)
 - **CAL FIRE Fire Perimeters**: https://www.fire.ca.gov/what-we-do/fire-resource-assessment-program/fire-perimeters
+- **US Census California Map Data** https://www2.census.gov/geo/tiger/TIGER2023/STATE/
 
 ## Project Structure
 
