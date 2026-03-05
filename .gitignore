@@ -6,3 +6,5 @@ __pycache__/
 .claude/settings.json
 Project Requirements/
 CLAUDE.md
+data/processed/*.tif
+output/*.html
