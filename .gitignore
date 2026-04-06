@@ -8,3 +8,5 @@ Project Requirements/
 CLAUDE.md
 data/processed/*.tif
 output/*.html
+learning_path.txt
+.env
