@@ -3,6 +3,16 @@ import pandas as pd
 from app.database import engine
 
 
+def health_check():
+    sql = f"""
+        SELECT 1
+    """
+    try:
+        pd.read_sql(sql, engine)
+        return True
+    except Exception as e:
+        print(f"Database connection error: {e}")
+        return False
 
 def get_local_fires(lat: float, lon: float, radius_km: float):
     sql = f"""
@@ -44,3 +54,24 @@ def get_local_firms(lat: float, lon: float, radius_km: float):
         ORDER BY acq_date DESC
     """
     return pd.read_sql(sql, engine)
+
+def fire_summary_stats():
+    sql = f"""
+        SELECT COUNT(*) AS total_fires, 
+                SUM("GIS_ACRES") AS total_acres, 
+                AVG("GIS_ACRES") AS avg_acres,
+                MIN("YEAR_") AS earliest_year,
+                MAX("YEAR_") AS latest_year
+        FROM fire_perimeters
+    """
+    return pd.read_sql(sql, engine).iloc[0].to_dict()
+
+def fire_stats_by_year():
+    sql = f"""
+        SELECT "YEAR_", COUNT(*) AS total_fires, SUM("GIS_ACRES") AS total_acres
+        FROM fire_perimeters
+        WHERE "YEAR_" IS NOT NULL
+        GROUP BY "YEAR_"
+        ORDER BY "YEAR_"
+    """
+    return pd.read_sql(sql, engine).to_dict(orient="records")
