@@ -75,3 +75,14 @@ def fire_stats_by_year():
         ORDER BY "YEAR_"
     """
     return pd.read_sql(sql, engine).to_dict(orient="records")
+
+def get_fire_geojson_by_name(fire_name: str):
+    # ST_Transform to 4326: GeoJSON spec requires WGS84 coordinates
+    sql = f"""
+        SELECT "FIRE_NAME", "YEAR_", "GIS_ACRES", ST_Transform(geometry, 4326) AS geometry
+        FROM fire_perimeters
+        WHERE "FIRE_NAME" ILIKE '%%{fire_name}%%'
+        ORDER BY "YEAR_" DESC
+        """
+    gdf = gpd.read_postgis(sql, engine, geom_col="geometry")
+    return gdf
