@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import json
-from app.queries import health_check, get_local_fires, largest_fires_by_year, get_fire_by_name, get_local_firms, fire_summary_stats, fire_stats_by_year, get_fire_geojson_by_name
+from app.queries import health_check, get_local_fires, largest_fires_by_year, get_fire_by_name, get_local_firms, fire_summary_stats, fire_stats_by_year, get_fire_geojson_by_name, get_fire_geojson_nearby
 
 app = FastAPI(title="California Wildfire API")
 
@@ -34,6 +34,11 @@ def get_fire_summary_stats():
 def get_fire_stats_by_year():
     return fire_stats_by_year()
 
+@app.get("/fires/geojson/nearby")
+def get_fire_geojson_nearby_route(lat: float, lon: float, radius_km: float = 50):
+    gdf = get_fire_geojson_nearby(lat, lon, radius_km)
+    return json.loads(gdf.to_json())
+
 @app.get("/fires/geojson/{fire_name}")
 def get_fire_geojson(fire_name: str):
     gdf = get_fire_geojson_by_name(fire_name)
@@ -48,5 +53,7 @@ def get_fires_by_name(fire_name: str):
 def get_nearby_NASA_firms_data(lat: float, lon: float, radius_km: float = 50):
     gdf = get_local_firms(lat, lon, radius_km)
     return gdf[["latitude", "longitude", "brightness", "confidence", "acq_date"]].to_dict(orient="records")
+
+
 
 

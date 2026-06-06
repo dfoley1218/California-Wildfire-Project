@@ -86,3 +86,18 @@ def get_fire_geojson_by_name(fire_name: str):
         """
     gdf = gpd.read_postgis(sql, engine, geom_col="geometry")
     return gdf
+
+def get_fire_geojson_nearby(lat: float, lon: float, radius_km: float):
+    sql = f"""
+        SELECT "FIRE_NAME", "YEAR_", "GIS_ACRES", ST_Transform(geometry, 4326) AS geometry
+        FROM fire_perimeters
+        WHERE ST_DWithin(
+            ST_Transform(geometry, 4326)::geography,
+            ST_SetSRID(ST_MakePoint({lon}, {lat}), 4326)::geography,
+            {radius_km * 1000}
+        )
+        ORDER BY "YEAR_" DESC
+    """
+    gdf = gpd.read_postgis(sql, engine, geom_col="geometry")
+    return gdf
+
