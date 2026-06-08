@@ -1,3 +1,4 @@
+from duckdb import sql
 import geopandas as gpd
 import pandas as pd
 from app.database import engine
@@ -101,3 +102,29 @@ def get_fire_geojson_nearby(lat: float, lon: float, radius_km: float):
     gdf = gpd.read_postgis(sql, engine, geom_col="geometry")
     return gdf
 
+## The following queries are created for the fire risk score
+
+def get_nearest_fire(lat: float, lon:float):
+    sql = f"""
+        SELECT "FIRE_NAME", "YEAR_",
+                ST_Distance(
+                    ST_Transform(geometry, 4326)::geography,
+                    ST_SetSRID(ST_MakePoint({lon}, {lat}), 4326)::geography
+                ) AS distance_m
+        FROM fire_perimeters
+        ORDER BY distance_m ASC
+        LIMIT 1
+    """
+    return pd.read_sql(sql, engine).iloc[0].to_dict()
+
+def count_fires_in_radius(lat: float, lon: float, radius_km: float):
+    sql = f"""
+        SELECT COUNT(*) as fire_count
+        FROM fire_perimeters
+        WHERE ST_DWithin(
+            ST_Transform(geometry, 4326)::geography,
+            ST_SetSRID(ST_MakePoint({lon}, {lat}), 4326)::geography,
+            {radius_km * 1000}
+        )
+    """
+    return pd.read_sql(sql, engine).iloc[0]["fire_count"]
