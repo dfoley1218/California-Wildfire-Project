@@ -8,19 +8,6 @@ DENSITY_SATURATION = 20    # this many fires → density score 100
 RECENCY_MAX_YEARS  = 50    # older than this → recency score 0
 CURRENT_YEAR       = 2026
 
-# proximity: nearest fire in km → 0–100
-distance_km = nearest["distance_m"] / 1000
-proximity = max(0, 100 - (distance_km * (100 / PROXIMITY_MAX_KM)))
-
-# density: count of nearby fires → 0–100
-density = min(100, fire_count * (100 / DENSITY_SATURATION))
-
-# recency: years since most recent → 0–100
-years_ago = CURRENT_YEAR - nearest["YEAR_"]
-recency = max(0, 100 - (years_ago * (100 / RECENCY_MAX_YEARS)))
-
-risk_score = (proximity * WEIGHT_PROXIMITY) + (density * WEIGHT_DENSITY) + (recency * WEIGHT_RECENCY)
-
 
 def calculate_risk_score(nearest, fire_count):
     distance_km = nearest["distance_m"] / 1000

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import json
-from app.queries import health_check, get_local_fires, largest_fires_by_year, get_fire_by_name, get_local_firms, fire_summary_stats, fire_stats_by_year, get_fire_geojson_by_name, get_fire_geojson_nearby
+from app.queries import health_check, get_local_fires, largest_fires_by_year, get_fire_by_name, get_local_firms, fire_summary_stats, fire_stats_by_year, get_fire_geojson_by_name, get_fire_geojson_nearby, get_nearest_fire, count_fires_in_radius
+from app.scoring import calculate_risk_score
 
 app = FastAPI(title="California Wildfire API")
 
@@ -53,6 +54,12 @@ def get_fires_by_name(fire_name: str):
 def get_nearby_NASA_firms_data(lat: float, lon: float, radius_km: float = 50):
     gdf = get_local_firms(lat, lon, radius_km)
     return gdf[["latitude", "longitude", "brightness", "confidence", "acq_date"]].to_dict(orient="records")
+
+@app.get("/risk")
+def get_risk_score(lat: float, lon: float):
+    nearest = get_nearest_fire(lat, lon)
+    fire_count = count_fires_in_radius(lat, lon, 20)
+    return calculate_risk_score(nearest, fire_count)
 
 
 

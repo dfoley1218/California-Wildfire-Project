@@ -105,10 +105,12 @@ ca-wildfire-project/
 │   ├── __init__.py
 │   ├── main.py               # API routes
 │   ├── queries.py            # SQL query functions
+│   ├── scoring.py            # Risk-score logic (pure math, no DB)
 │   └── database.py           # SQLAlchemy engine + env config
 ├── tests/                    # pytest test suite
 │   ├── __init__.py
-│   └── test_main.py
+│   ├── test_main.py          # API route tests (TestClient)
+│   └── test_scoring.py       # Risk-score unit tests (no DB)
 ├── notebooks/                # Geospatial analysis notebooks (see "The Notebooks")
 │   ├── 01_explore_fire_perimeters.ipynb
 │   ├── 02_crs_transformations.ipynb
@@ -203,9 +205,11 @@ Base URL (local): `http://127.0.0.1:8000`
 | `GET` | `/fires/largest?year=` | Top 10 fires by acreage for a given year. |
 | `GET` | `/fires/summary` | Totals: fire count, total/avg acres, earliest & latest year. |
 | `GET` | `/fires/stats_by_year` | Fire count + total acres grouped by year. |
+| `GET` | `/fires/geojson/nearby?lat=&lon=&radius_km=` | Fires near a point as a GeoJSON FeatureCollection (WGS84). |
 | `GET` | `/fires/geojson/{fire_name}` | Fire perimeter(s) matching a name, as a GeoJSON FeatureCollection (WGS84). |
 | `GET` | `/fires/{fire_name}` | Fire records matching a name (tabular, case-insensitive `ILIKE`). |
 | `GET` | `/firms/nearby?lat=&lon=&radius_km=` | NASA FIRMS satellite detections near a point. |
+| `GET` | `/risk?lat=&lon=` | **Wildfire risk score (0–100)** for a location, with a factor breakdown. |
 
 ### Example: nearby fires
 
@@ -241,7 +245,46 @@ Returns a GeoJSON `FeatureCollection`. Paste the response into [geojson.io](http
 }
 ```
 
-> **Implementation note — route ordering.** Specific paths (`/fires/summary`, `/fires/largest`, `/fires/geojson/{fire_name}`) are declared *before* the catch-all `/fires/{fire_name}` so FastAPI matches them first.
+### Example: wildfire risk score
+
+```bash
+curl "http://127.0.0.1:8000/risk?lat=34.04&lon=-118.53"
+```
+
+```json
+{
+  "risk_score": 99.6,
+  "factors": {
+    "proximity": { "score": 100.0, "nearest_fire_km": 0.0, "nearest_fire": "PALISADES", "year": 2025 },
+    "density":   { "score": 100.0, "fires_within_radius": 273 },
+    "recency":   { "score": 98.0, "most_recent_year": 2025 }
+  }
+}
+```
+
+A point inside the 2025 Palisades burn area scores ~99.6; a remote point far from any fire history scores near 0. The response always returns the **factor breakdown** alongside the headline score, so the result is transparent rather than a black box.
+
+> **Implementation note — route ordering.** Specific paths (`/fires/summary`, `/fires/largest`, `/fires/geojson/nearby`) are declared *before* the catch-all wildcards (`/fires/geojson/{fire_name}`, `/fires/{fire_name}`) so FastAPI matches the literal paths first.
+
+---
+
+## The Risk Model
+
+The `/risk` endpoint computes a wildfire risk score from **0–100** by combining three factors, each normalized to 0–100 and then weighted:
+
+```
+risk = (proximity × 0.5) + (density × 0.3) + (recency × 0.2)
+```
+
+| Factor | What it measures | Sub-score formula |
+|--------|------------------|-------------------|
+| **Proximity** | Distance to the nearest historical fire (`ST_Distance`). | `max(0, 100 − km × (100 / 50))` — 0 km → 100, ≥ 50 km → 0 |
+| **Density** | Count of fires within 20 km (`ST_DWithin` + `COUNT`). | `min(100, count × (100 / 20))` — saturates at 20 fires |
+| **Recency** | Years since the most recent nearby fire. | `max(0, 100 − years × (100 / 50))` — this year → 100, ≥ 50 yrs → 0 |
+
+The weights and thresholds are **named constants** at the top of [`app/scoring.py`](app/scoring.py), so they are easy to inspect, tune, and test.
+
+> **On the weights — an honest note.** These weights are a **heuristic**, not trained values: they encode the domain assumption that recent, close fire activity is the strongest risk signal. The principled next step (see Roadmap) is to gather ground-truth burn outcomes and fit the weights with a logistic regression, so the data determines them rather than the author. Because the scoring logic is a pure function ([`calculate_risk_score`](app/scoring.py)) decoupled from the database queries, swapping in trained weights is a localized change — and the logic is unit-tested in [`tests/test_scoring.py`](tests/test_scoring.py) with no database required.
 
 ---
 
@@ -268,13 +311,16 @@ jupyter notebook notebooks/01_explore_fire_perimeters.ipynb
 
 ## Testing
 
-The test suite uses FastAPI's `TestClient` (backed by httpx). Tests in [`tests/test_main.py`](tests/test_main.py) cover the root route and the shape of `/fires/nearby` responses.
-
 ```bash
 pytest
 ```
 
-> The endpoint tests hit the live database, so PostGIS must be running and populated for them to pass meaningfully.
+The suite has two layers:
+
+- **[`tests/test_scoring.py`](tests/test_scoring.py)** — unit tests for the risk-score logic. Because [`calculate_risk_score`](app/scoring.py) is pure math decoupled from the database, these run with **no PostGIS required** and cover the high-risk case, the low-risk case, the factor-breakdown structure, and score-bounds clamping.
+- **[`tests/test_main.py`](tests/test_main.py)** — API route tests via FastAPI's `TestClient` (backed by httpx), covering the root route and the shape of `/fires/nearby` responses.
+
+> The route tests in `test_main.py` hit the live database, so PostGIS must be running and populated for them to pass meaningfully. The scoring tests have no such dependency.
 
 ---
 
@@ -283,9 +329,13 @@ pytest
 - [x] Geospatial analysis notebooks (GeoPandas, Rasterio, COG, Leafmap)
 - [x] PostGIS integration & spatial queries
 - [x] FastAPI app with proximity, stats, GeoJSON, and FIRMS endpoints
-- [ ] `GET /fires/geojson/nearby` — nearby fires as a GeoJSON FeatureCollection
-- [ ] `GET /risk?lat=&lon=` — wildfire risk score (0–100) combining proximity, history, and terrain
-- [ ] Expand pytest coverage; add CI via GitHub Actions
+- [x] `GET /fires/geojson/nearby` — nearby fires as a GeoJSON FeatureCollection
+- [x] `GET /risk?lat=&lon=` — wildfire risk score (0–100) with factor breakdown
+- [x] Unit tests for the scoring logic (no DB required)
+- [ ] **Train the risk weights** — gather ground-truth burn outcomes and fit a logistic regression so the weights are learned, not hand-set
+- [ ] Add **terrain** (slope/elevation) as a fourth risk factor by loading the elevation raster into PostGIS
+- [ ] Expand pytest coverage for the route layer; add CI via GitHub Actions
+- [ ] Optimize `ST_DWithin` queries to use a spatial index (avoid per-row `ST_Transform`)
 - [ ] Dockerize (app + PostGIS) and deploy
 - [ ] Group endpoints with FastAPI **tags**; add a Leaflet demo map
 
@@ -301,5 +351,3 @@ pytest
 - [GeoJSON Specification (RFC 7946)](https://datatracker.ietf.org/doc/html/rfc7946)
 - [EPSG:3310 — California Albers](https://epsg.io/3310)
 - [NASA FIRMS](https://firms.modaps.eosdis.nasa.gov/)
-</content>
-</invoke>
