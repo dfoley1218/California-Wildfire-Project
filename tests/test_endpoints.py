@@ -21,10 +21,12 @@ def test_fires_geojson_nearby(client):
     assert data["type"] == "FeatureCollection"
 
 def test_fires_geojson_fire_name(client):
-    response = client.get("/fires/geojson/fire_name?name=PALISADES")
+    response = client.get("/fires/geojson/PALISADES")
     assert response.status_code == 200
     data = response.json()
     assert data["type"] == "FeatureCollection"
+    # Spatial correctness: the named fire is actually returned
+    assert any(f["properties"]["FIRE_NAME"] == "PALISADES" for f in data["features"])
 
 def test_fires_nearby(client):
     response = client.get("/fires/nearby?lat=34.04&lon=-118.53&radius_km=20")
