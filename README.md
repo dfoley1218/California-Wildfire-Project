@@ -1,5 +1,7 @@
 # California Wildfire Risk & Impact API
 
+[![Test](https://github.com/dfoley1218/California-Wildfire-Project/actions/workflows/test.yml/badge.svg)](https://github.com/dfoley1218/California-Wildfire-Project/actions/workflows/test.yml)
+
 A production-grade geospatial project that analyzes California wildfire perimeters and serves the results through a REST API. It pairs a series of hands-on geospatial analysis notebooks (GeoPandas → Rasterio → PostGIS) with a [FastAPI](https://fastapi.tiangolo.com/) application backed by a PostGIS database, exposing spatial queries over **22,800+ CAL FIRE wildfire perimeters (1878–2024)** and **NASA FIRMS satellite fire detections** from the 2025 Los Angeles fires.
 
 > **Why this project exists.** I lived in Santa Monica during the January 2025 Los Angeles wildfires. This project is both a personal response to that experience and a portfolio piece built toward geospatial software engineering work — it covers the full pipeline from raw geodata to a deployable spatial API.
