@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: wildfire_db
+    ports:
+      - "5432:5432"
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: test
+      DB_HOST: db
+      DB_NAME: wildfire_db
+    depends_on:
+      - db
