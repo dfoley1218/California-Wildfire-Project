@@ -10,3 +10,6 @@ data/processed/*.tif
 output/*.html
 learning_path.txt
 .env
+
+# Generated data artifact — regenerate with `python -m scripts.export_fires`
+frontend/fires.geojson
