@@ -9,17 +9,170 @@
   <style>
     body { margin: 0; }
     #map { height: 100vh; }
+
+    .maplibregl-popup-content {
+      background: #0d1b2a;
+      color: #e8eef4;
+      border: 1px solid #2a3f52;
+      border-radius: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 10px 12px;
+    }
+    .maplibregl-popup-content strong {
+      color: #4dd8e6;
+    }
+    .maplibregl-popup-tip {
+      border-top-color: #0d1b2a !important;
+      border-bottom-color: #0d1b2a !important;
+    }
+    .maplibregl-popup-close-button {
+      color: #e8eef4;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
   <script>
+
+    function getCentroid(feature) {
+      const ring = feature.geometry.coordinates[0];
+      let sumLng = 0
+      let sumLat = 0
+
+      for (const point of ring) {
+        sumLng += point[0];
+        sumLat += point[1];
+      }
+      return { lng: sumLng / ring.length, lat: sumLat / ring.length};
+    }
+
+    
+
+
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth's radius in km
+  const toRad = deg => deg * Math.PI / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a = Math.sin(dLat / 2) ** 2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) ** 2;
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c; // distance in km
+}
+
     const map = new maplibregl.Map({
       container: 'map',
-      style: 'https://demotiles.maplibre.org/style.json',  // free basemap, no API key
+      style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',  // free dark basemap, no API key
       center: [-119.4, 36.5],   // California
       zoom: 5
     });
+    map.on('load', () => {
+      if (map.getLayer('background')) {
+        map.setPaintProperty('background', 'background-color', '#1c2733');
+      }
+      map.addSource('fires', {
+        type: 'geojson',
+        data: 'fires.geojson'
+      });
+      map.addLayer({
+        id: 'fires-layer',
+        type: 'fill',
+        source: 'fires',
+        paint: {
+          'fill-color': [
+            'interpolate', ['linear'], ['get', 'GIS_ACRES'],
+            0, '#ffd166',
+            50000, '#f4732c',
+            500000, '#d7263d'
+          ],
+          'fill-opacity': 0.55
+        }
+      });
+      map.addLayer({
+        id: 'fires-outline',
+        type: 'line',
+        source: 'fires',
+        paint: {
+          'line-color': '#ffb347',
+          'line-width': 1,
+          'line-opacity': 0.8
+        }
+      });
+    });
+    map.on('click', (e) => {
+  const waterHit = map.queryRenderedFeatures(e.point, { layers: ['water'] });
+  if (waterHit.length > 0) {
+    new maplibregl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(`<strong>Risk Score: 0</strong><br>No wildfire risk over water`)
+      .addTo(map);
+    return;
+  }
+  const fireHit = map.queryRenderedFeatures(e.point, { layers: ['fires-layer'] });
+  const clickedFire = fireHit.length > 0 ? fireHit[0] : null;
+
+  const clickLat = e.lngLat.lat;
+  const clickLng = e.lngLat.lng;
+
+  const fires = map.querySourceFeatures('fires');
+
+let nearestDistance = Infinity;
+let nearestFire = null;
+let fireCount = 0;          // new: counts fires within DENSITY_RADIUS_KM
+
+for (const fire of fires) {
+  const centroid = getCentroid(fire);
+  const distance = haversineDistance(clickLat, clickLng, centroid.lat, centroid.lng);
+
+  if (distance < nearestDistance) {
+    nearestDistance = distance;
+    nearestFire = fire;
+  }
+
+  if (distance <= 20) {
+    fireCount++;
+  }
+}
+if (!nearestFire) {
+  console.log('No fire data near this area.');
+  return;
+
+}
+const proximity = Math.max(0, 100 - nearestDistance * (100/ 50));
+  console.log('proximity', proximity.toFixed(2));
+
+const density = Math.min(100, fireCount * (100/20))
+  console.log('density', density);
+
+const yearsAgo = 2026 - nearestFire.properties.YEAR_;
+const recency = Math.max(0, 100 - yearsAgo * (100/50));
+
+const risk = proximity * 0.5 + density * 0.3 + recency * 0.2;
+console.log('risk score:', risk.toFixed(2));
+
+
+  console.log('Nearest fire:', nearestFire.properties.FIRE_NAME, nearestDistance.toFixed(2), 'km');
+const clickedFireLine = clickedFire
+  ? `<strong> FIRE: ${clickedFire.properties.FIRE_NAME}</strong><br>`
+  : '';
+
+new maplibregl.Popup()
+  .setLngLat(e.lngLat)
+  .setHTML(`
+    ${clickedFireLine}
+    <strong>Risk Score: ${risk.toFixed(2)}</strong><br>
+    Nearest fire: ${nearestFire.properties.FIRE_NAME} (${nearestDistance.toFixed(2)} km)<br>
+    ${Math.round(nearestFire.properties.GIS_ACRES).toLocaleString()} acres<br>
+    Fires within 20km: ${fireCount}
+  `)
+  .addTo(map);
+
+});
   </script>
 </body>
 </html>
