@@ -12,3 +12,9 @@ learning_path.txt
 .env
 
 # frontend/fires.geojson intentionally committed as static site data for deploy
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
