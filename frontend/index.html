@@ -28,10 +28,72 @@
     .maplibregl-popup-close-button {
       color: #e8eef4;
     }
+
+    #info-panel {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 1;
+      max-width: 280px;
+      background: #0d1b2a;
+      color: #e8eef4;
+      border: 1px solid #2a3f52;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    #info-panel h1 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      color: #4dd8e6;
+    }
+    #info-panel p {
+      margin: 0;
+    }
+    #info-panel-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #8fa3b3;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    #info-panel-close:hover {
+      color: #e8eef4;
+    }
+    #acreage-filter {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #2a3f52;
+    }
+    #acreage-filter label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #8fa3b3;
+    }
+    #acreage-filter input[type="range"] {
+      width: 100%;
+    }
   </style>
 </head>
 <body>
   <div id="map"></div>
+  <div id="info-panel">
+    <button id="info-panel-close" aria-label="Close">&times;</button>
+    <h1>California Wildfire Risk Explorer</h1>
+    <p>Click anywhere on the map to see a wildfire risk score based on nearby fire history. Colored shapes are past fire perimeters, sized and colored by acreage.</p>
+    <div id="acreage-filter">
+      <label for="acreage-slider">Show fires larger than: <span id="acreage-value">0</span> acres</label>
+      <input type="range" id="acreage-slider" min="0" max="500000" step="5000" value="0">
+    </div>
+  </div>
   <script>
 
     function getCentroid(feature) {
@@ -64,6 +126,10 @@
 
   return R * c; // distance in km
 }
+
+    document.getElementById('info-panel-close').addEventListener('click', () => {
+      document.getElementById('info-panel').style.display = 'none';
+    });
 
     const map = new maplibregl.Map({
       container: 'map',
@@ -102,6 +168,16 @@
           'line-width': 1,
           'line-opacity': 0.8
         }
+      });
+
+      const acreageSlider = document.getElementById('acreage-slider');
+      const acreageValue = document.getElementById('acreage-value');
+      acreageSlider.addEventListener('input', () => {
+        const minAcres = Number(acreageSlider.value);
+        acreageValue.textContent = minAcres.toLocaleString();
+        const filter = ['>=', ['get', 'GIS_ACRES'], minAcres];
+        map.setFilter('fires-layer', filter);
+        map.setFilter('fires-outline', filter);
       });
     });
     map.on('click', (e) => {
