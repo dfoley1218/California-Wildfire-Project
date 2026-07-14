@@ -7,91 +7,342 @@
   <script src="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
-    body { margin: 0; }
+    :root {
+      --ground: #0d1b2a;
+      --surface: #12263a;
+      --surface-raised: #17324a;
+      --border: #2a3f52;
+      --text: #e8eef4;
+      --text-muted: #8fa3b3;
+      --accent: #4dd8e6;
+      --accent-dim: #2f9aa8;
+      --fire-low: #ffd166;
+      --fire-mid: #f4732c;
+      --fire-high: #d7263d;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--font); }
     #map { height: 100vh; }
 
+    /* --- MapLibre popup --- */
     .maplibregl-popup-content {
-      background: #0d1b2a;
-      color: #e8eef4;
-      border: 1px solid #2a3f52;
-      border-radius: 6px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 10px 12px;
+      background: var(--ground);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: var(--font);
+      padding: 12px 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+      line-height: 1.5;
     }
-    .maplibregl-popup-content strong {
-      color: #4dd8e6;
-    }
+    .maplibregl-popup-content strong { color: var(--accent); }
     .maplibregl-popup-tip {
-      border-top-color: #0d1b2a !important;
-      border-bottom-color: #0d1b2a !important;
+      border-top-color: var(--ground) !important;
+      border-bottom-color: var(--ground) !important;
     }
     .maplibregl-popup-close-button {
-      color: #e8eef4;
+      color: var(--text-muted);
+      font-size: 18px;
+      padding: 2px 8px;
+    }
+    .maplibregl-popup-close-button:hover { color: var(--text); background: none; }
+
+    /* --- shared panel chrome --- */
+    .panel {
+      position: absolute;
+      z-index: 1;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+    }
+    .panel-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 600;
     }
 
+    /* --- top-left info card --- */
     #info-panel {
-      position: absolute;
       top: 16px;
       left: 16px;
-      z-index: 1;
-      max-width: 280px;
-      background: #0d1b2a;
-      color: #e8eef4;
-      border: 1px solid #2a3f52;
-      border-radius: 8px;
-      padding: 14px 16px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 300px;
+      padding: 16px 18px;
       font-size: 14px;
-      line-height: 1.5;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      line-height: 1.55;
     }
     #info-panel h1 {
-      margin: 0 0 6px;
-      font-size: 16px;
-      color: #4dd8e6;
+      margin: 0 0 8px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      text-wrap: balance;
     }
-    #info-panel p {
-      margin: 0;
-    }
+    #info-panel h1 .accent { color: var(--accent); }
+    #info-panel p { margin: 0; color: var(--text-muted); }
     #info-panel-close {
       position: absolute;
-      top: 8px;
-      right: 10px;
+      top: 10px;
+      right: 12px;
       background: none;
       border: none;
-      color: #8fa3b3;
-      font-size: 16px;
+      color: var(--text-muted);
+      font-size: 18px;
       cursor: pointer;
       line-height: 1;
+      padding: 0;
     }
-    #info-panel-close:hover {
-      color: #e8eef4;
+    #info-panel-close:hover { color: var(--text); }
+
+    /* --- bottom control bar --- */
+    #controls {
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      max-width: calc(100vw - 32px);
+      overflow: hidden;
     }
-    #acreage-filter {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid #2a3f52;
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-right: 1px solid var(--border);
     }
-    #acreage-filter label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
-      color: #8fa3b3;
+    .control-group:last-child { border-right: none; }
+
+    /* fire count readout — the summary stat */
+    #count-readout {
+      align-items: flex-start;
+      gap: 3px;
+      min-width: 92px;
     }
-    #acreage-filter input[type="range"] {
+    #count-value {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    #count-value .total { color: var(--text-muted); font-weight: 400; font-size: 12px; }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .readout {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    #acreage-group { min-width: 180px; }
+
+    /* single-handle acreage slider */
+    #acreage-slider {
+      -webkit-appearance: none;
+      appearance: none;
       width: 100%;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--surface-raised);
+      outline: none;
+      cursor: pointer;
+    }
+    #acreage-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--ground);
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    #acreage-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    #acreage-slider::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--ground);
+      cursor: pointer;
+    }
+
+    /* dual-handle year range slider: two range inputs stacked over one track */
+    #year-group { min-width: 168px; }
+    .dual-range {
+      position: relative;
+      height: 13px;
+      display: flex;
+      align-items: center;
+    }
+    .dual-range .track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--surface-raised);
+    }
+    .dual-range .track-fill {
+      position: absolute;
+      height: 3px;
+      border-radius: 3px;
+      background: var(--accent-dim);
+    }
+    .dual-range input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 13px;
+      margin: 0;
+      background: none;
+      pointer-events: none; /* only the thumbs are interactive */
+      outline: none;
+    }
+    .dual-range input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--ground);
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform 0.1s ease;
+    }
+    .dual-range input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .dual-range input[type="range"]::-moz-range-thumb {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--ground);
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    /* reset button */
+    #reset-btn {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: none;
+      border: none;
+      border-left: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: color 0.12s ease, background 0.12s ease;
+    }
+    #reset-btn:hover { color: var(--accent); background: rgba(77,216,230,0.06); }
+    #reset-btn:focus-visible { color: var(--accent); outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    /* --- bottom-right legend --- */
+    #legend {
+      bottom: 16px;
+      right: 16px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 132px;
+    }
+    #legend-bar {
+      height: 7px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--fire-low), var(--fire-mid), var(--fire-high));
+    }
+    #legend-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 720px) {
+      #controls { flex-direction: column; }
+      .control-group, #reset-btn { border-right: none; border-bottom: 1px solid var(--border); }
+      #reset-btn { border-left: none; padding: 12px 20px; justify-content: center; }
+      #legend { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <div id="info-panel">
-    <button id="info-panel-close" aria-label="Close">&times;</button>
-    <h1>California Wildfire Risk Explorer</h1>
-    <p>Click anywhere on the map to see a wildfire risk score based on nearby fire history. Colored shapes are past fire perimeters, sized and colored by acreage.</p>
-    <div id="acreage-filter">
-      <label for="acreage-slider">Show fires larger than: <span id="acreage-value">0</span> acres</label>
-      <input type="range" id="acreage-slider" min="0" max="500000" step="5000" value="0">
+
+  <div id="info-panel" class="panel">
+    <button id="info-panel-close" aria-label="Close instructions">&times;</button>
+    <h1>California <span class="accent">Wildfire Risk</span> Explorer</h1>
+    <p>Click anywhere on the map to get a wildfire risk score based on nearby fire history. Shaded areas are past fire perimeters, colored by size. Use the controls below to filter what you see.</p>
+  </div>
+
+  <div id="controls" class="panel">
+    <div class="control-group" id="count-readout">
+      <span class="panel-label">Fires shown</span>
+      <span id="count-value">297<span class="total"> / 297</span></span>
+    </div>
+
+    <div class="control-group" id="acreage-group">
+      <div class="slider-row">
+        <span class="panel-label">Min size</span>
+        <span id="acreage-value" class="readout">Any size</span>
+      </div>
+      <input type="range" id="acreage-slider" min="0" max="500000" step="5000" value="0" aria-label="Minimum fire size in acres">
+    </div>
+
+    <div class="control-group" id="year-group">
+      <div class="slider-row">
+        <span class="panel-label">Years</span>
+        <span id="year-value" class="readout">2018–2025</span>
+      </div>
+      <div class="dual-range">
+        <div class="track"></div>
+        <div class="track-fill" id="year-fill"></div>
+        <input type="range" id="year-min" min="2018" max="2025" step="1" value="2018" aria-label="Earliest year">
+        <input type="range" id="year-max" min="2018" max="2025" step="1" value="2025" aria-label="Latest year">
+      </div>
+    </div>
+
+    <button id="reset-btn" type="button">Reset</button>
+  </div>
+
+  <div id="legend" class="panel">
+    <span class="panel-label">Fire size (acres)</span>
+    <div id="legend-bar"></div>
+    <div id="legend-scale">
+      <span>0</span>
+      <span>50k</span>
+      <span>500k+</span>
     </div>
   </div>
   <script>
@@ -170,15 +421,69 @@
         }
       });
 
+      // --- filter controls (acreage + year range), live count, reset ---
       const acreageSlider = document.getElementById('acreage-slider');
       const acreageValue = document.getElementById('acreage-value');
-      acreageSlider.addEventListener('input', () => {
+      const yearMin = document.getElementById('year-min');
+      const yearMax = document.getElementById('year-max');
+      const yearValue = document.getElementById('year-value');
+      const yearFill = document.getElementById('year-fill');
+      const countValue = document.getElementById('count-value');
+      const resetBtn = document.getElementById('reset-btn');
+
+      const TOTAL_FIRES = map.querySourceFeatures('fires').length;
+      const YEAR_LO = Number(yearMin.min);
+      const YEAR_HI = Number(yearMin.max);
+
+      // Position the highlighted portion of the year track between the two thumbs.
+      function paintYearFill(lo, hi) {
+        const span = YEAR_HI - YEAR_LO;
+        const leftPct = ((lo - YEAR_LO) / span) * 100;
+        const rightPct = ((hi - YEAR_LO) / span) * 100;
+        yearFill.style.left = leftPct + '%';
+        yearFill.style.width = (rightPct - leftPct) + '%';
+      }
+
+      function applyFilters() {
         const minAcres = Number(acreageSlider.value);
-        acreageValue.textContent = minAcres.toLocaleString();
-        const filter = ['>=', ['get', 'GIS_ACRES'], minAcres];
-        map.setFilter('fires-layer', filter);
-        map.setFilter('fires-outline', filter);
+        let lo = Number(yearMin.value);
+        let hi = Number(yearMax.value);
+        // Keep the two thumbs from crossing over each other.
+        if (lo > hi) { [lo, hi] = [hi, lo]; }
+
+        // 'all' = AND combiner: a fire must pass every sub-condition to show.
+        const conditions = [
+          'all',
+          ['>=', ['get', 'GIS_ACRES'], minAcres],
+          ['>=', ['get', 'YEAR_'], lo],
+          ['<=', ['get', 'YEAR_'], hi]
+        ];
+        map.setFilter('fires-layer', conditions);
+        map.setFilter('fires-outline', conditions);
+
+        // Readouts.
+        acreageValue.textContent = minAcres === 0 ? 'Any size' : minAcres.toLocaleString() + '+ acres';
+        yearValue.textContent = lo === hi ? String(lo) : lo + '–' + hi;
+        paintYearFill(lo, hi);
+
+        const shown = map.querySourceFeatures('fires').filter(f => {
+          const p = f.properties;
+          return p.GIS_ACRES >= minAcres && p.YEAR_ >= lo && p.YEAR_ <= hi;
+        }).length;
+        countValue.innerHTML = shown + '<span class="total"> / ' + TOTAL_FIRES + '</span>';
+      }
+
+      acreageSlider.addEventListener('input', applyFilters);
+      yearMin.addEventListener('input', applyFilters);
+      yearMax.addEventListener('input', applyFilters);
+      resetBtn.addEventListener('click', () => {
+        acreageSlider.value = 0;
+        yearMin.value = YEAR_LO;
+        yearMax.value = YEAR_HI;
+        applyFilters();
       });
+
+      paintYearFill(YEAR_LO, YEAR_HI);
     });
     map.on('click', (e) => {
   const waterHit = map.queryRenderedFeatures(e.point, { layers: ['water'] });
