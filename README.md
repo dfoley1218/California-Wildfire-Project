@@ -288,6 +288,8 @@ The weights and thresholds are **named constants** at the top of [`app/scoring.p
 
 > **On the weights — an honest note.** These weights are a **heuristic**, not trained values: they encode the domain assumption that recent, close fire activity is the strongest risk signal. The principled next step (see Roadmap) is to gather ground-truth burn outcomes and fit the weights with a logistic regression, so the data determines them rather than the author. Because the scoring logic is a pure function ([`calculate_risk_score`](app/scoring.py)) decoupled from the database queries, swapping in trained weights is a localized change — and the logic is unit-tested in [`tests/test_scoring.py`](tests/test_scoring.py) with no database required.
 
+> **Two implementations, one model.** The canonical scoring logic lives in [`app/scoring.py`](app/scoring.py) as a tested Python function. The [live interactive explorer](https://california-wildfire-project.pages.dev) is a static site — its risk score is a hand-written JavaScript port of the same formula, computed entirely client-side against a bundled GeoJSON snapshot of the fire data, so the map works instantly with no server round-trip. It does not call this API.
+
 ---
 
 ## The Notebooks
@@ -334,12 +336,14 @@ The suite has two layers:
 - [x] `GET /fires/geojson/nearby` — nearby fires as a GeoJSON FeatureCollection
 - [x] `GET /risk?lat=&lon=` — wildfire risk score (0–100) with factor breakdown
 - [x] Unit tests for the scoring logic (no DB required)
+- [x] Expand pytest coverage for the route layer (97% coverage); add CI via GitHub Actions
+- [x] Dockerize (app + PostGIS) — `docker compose up` runs the full stack locally
+- [x] Client-side interactive risk explorer (MapLibre + JS port of the scoring model), deployed at [california-wildfire-project.pages.dev](https://california-wildfire-project.pages.dev)
 - [ ] **Train the risk weights** — gather ground-truth burn outcomes and fit a logistic regression so the weights are learned, not hand-set
 - [ ] Add **terrain** (slope/elevation) as a fourth risk factor by loading the elevation raster into PostGIS
-- [ ] Expand pytest coverage for the route layer; add CI via GitHub Actions
 - [ ] Optimize `ST_DWithin` queries to use a spatial index (avoid per-row `ST_Transform`)
-- [ ] Dockerize (app + PostGIS) and deploy
-- [ ] Group endpoints with FastAPI **tags**; add a Leaflet demo map
+- [ ] Deploy the FastAPI backend to a live URL (e.g. Render's free tier + managed PostGIS) so `/docs` is publicly reachable
+- [ ] Group endpoints with FastAPI **tags**
 
 ---
 
