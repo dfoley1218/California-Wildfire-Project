@@ -19,6 +19,7 @@ A production-grade geospatial project that analyzes California wildfire perimete
 - [The API](#the-api)
 - [The Notebooks](#the-notebooks)
 - [Testing](#testing)
+- [What's Next](#whats-next)
 - [References](#references)
 
 ---
@@ -287,7 +288,13 @@ The weights and thresholds are **named constants** at the top of [`app/scoring.p
 
 > **On the weights — an honest note.** These weights are a **heuristic**, not trained values: they encode the domain assumption that recent, close fire activity is the strongest risk signal. The principled next step (see Roadmap) is to gather ground-truth burn outcomes and fit the weights with a logistic regression, so the data determines them rather than the author. Because the scoring logic is a pure function ([`calculate_risk_score`](app/scoring.py)) decoupled from the database queries, swapping in trained weights is a localized change — and the logic is unit-tested in [`tests/test_scoring.py`](tests/test_scoring.py) with no database required.
 
-> **Two implementations, one model.** The canonical scoring logic lives in [`app/scoring.py`](app/scoring.py) as a tested Python function. The [live interactive explorer](https://california-wildfire-project.pages.dev) is a static site — its risk score is a hand-written JavaScript port of the same formula, computed entirely client-side against a bundled GeoJSON snapshot of the fire data, so the map works instantly with no server round-trip. It does not call this API.
+> **On implementation — two copies, one source of truth.** The live map
+> (deployed separately on Cloudflare Pages) runs a client-side JavaScript
+> port of this scoring logic for instant, no-network results while panning
+> the map. The Python version in `app/scoring.py` above is canonical — it's
+> the one covered by `tests/test_scoring.py`, and the JS is a manual port of
+> it, not an independent implementation. If the two ever disagree, the
+> Python version is correct.
 
 ---
 
@@ -324,6 +331,19 @@ The suite has two layers:
 - **[`tests/test_main.py`](tests/test_main.py)** — API route tests via FastAPI's `TestClient` (backed by httpx), covering the root route and the shape of `/fires/nearby` responses.
 
 > The route tests in `test_main.py` hit the live database, so PostGIS must be running and populated for them to pass meaningfully. The scoring tests have no such dependency.
+
+---
+
+## What's Next
+
+The core pipeline — notebooks, PostGIS, FastAPI, and the `/risk` endpoint — is
+complete and tested. The scoring weights are currently a hand-set heuristic
+(see [The Risk Model](#the-risk-model)); the next iteration is gathering
+ground-truth burn outcomes and fitting them with a logistic regression instead.
+Beyond that: adding terrain (slope/elevation) as a fourth risk factor via the
+elevation raster already produced in the notebooks, indexing `ST_DWithin`
+queries for performance, and deploying the API to a public URL alongside the
+live map.
 
 ---
 
