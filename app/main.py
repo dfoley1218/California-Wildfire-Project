@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query
+from fastapi.responses import RedirectResponse
 import json
 from app.queries import health_check, get_local_fires, largest_fires_by_year, get_fire_by_name, get_local_firms, fire_summary_stats, fire_stats_by_year, get_fire_geojson_by_name, get_fire_geojson_nearby, get_nearest_fire, count_fires_in_radius
 from app.scoring import calculate_risk_score
@@ -8,7 +9,8 @@ app = FastAPI(title="California Wildfire API")
 
 @app.get("/")
 def root():
-    return {"message": "California Wildfire API is running"}
+    # Send visitors of the bare base URL to the interactive Swagger docs.
+    return RedirectResponse(url="/docs")
 
 @app.get("/health")
 def health():

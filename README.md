@@ -203,7 +203,7 @@ Base URL (local): `http://127.0.0.1:8000`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/` | Root welcome message. |
+| `GET` | `/` | Redirects to the interactive API docs (`/docs`). |
 | `GET` | `/health` | Database connectivity check (`SELECT 1`). |
 | `GET` | `/fires/nearby?lat=&lon=&radius_km=` | Fire perimeters within `radius_km` of a point (`ST_DWithin`). |
 | `GET` | `/fires/largest?year=` | Top 10 fires by acreage for a given year. |
