@@ -1,6 +1,10 @@
 # California Wildfire Risk & Impact API
 
 [![Test](https://github.com/dfoley1218/California-Wildfire-Project/actions/workflows/test.yml/badge.svg)](https://github.com/dfoley1218/California-Wildfire-Project/actions/workflows/test.yml)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Map_Explorer-2ea44f)](https://california-wildfire-project.pages.dev/)
+[![Live API](https://img.shields.io/badge/Live_API-Swagger_Docs-1f6feb)](https://california-wildfire-project.onrender.com/docs)
+
+**🗺️ [Explore the interactive map](https://california-wildfire-project.pages.dev/)** · **📖 [Try the live API](https://california-wildfire-project.onrender.com/docs)**
 
 A production-grade geospatial project that analyzes California wildfire perimeters and serves the results through a REST API. It pairs a series of hands-on geospatial analysis notebooks (GeoPandas → Rasterio → PostGIS) with a [FastAPI](https://fastapi.tiangolo.com/) application backed by a PostGIS database, exposing spatial queries over **22,800+ CAL FIRE wildfire perimeters (1878–2024)** and **NASA FIRMS satellite fire detections** from the 2025 Los Angeles fires.
 
