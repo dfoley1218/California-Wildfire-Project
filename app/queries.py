@@ -1,4 +1,3 @@
-from duckdb import sql
 import geopandas as gpd
 import pandas as pd
 from app.database import engine
