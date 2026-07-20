@@ -166,17 +166,17 @@ pip install -r requirements.txt
 
 ### 3. Configure the database connection
 
-The app reads credentials from environment variables via a `.env` file (which is gitignored). Create one in the project root:
+The app reads a single **`DATABASE_URL`** connection string from a `.env` file (which is gitignored). Create one in the project root:
 
 ```env
-DB_USER=your_postgres_user
-DB_PASSWORD=your_postgres_password
-DB_HOST=localhost
-DB_NAME=wildfire_db
+DATABASE_URL=postgresql+psycopg2://your_user:your_password@localhost:5432/wildfire_db
 ```
 
-These are consumed in [`app/database.py`](app/database.py) to build the connection string:
-`postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}`
+This is consumed in [`app/database.py`](app/database.py). Using one URL keeps configuration simple and works directly with hosted Postgres providers (e.g. [Neon](https://neon.tech)), whose connection strings include SSL parameters:
+
+```env
+DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+```
 
 ### 4. Load the data into PostGIS
 

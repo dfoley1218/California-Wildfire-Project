@@ -12,9 +12,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DB_USER: postgres
-      DB_PASSWORD: test
-      DB_HOST: db
-      DB_NAME: wildfire_db
+      DATABASE_URL: postgresql+psycopg2://postgres:test@db:5432/wildfire_db
     depends_on:
       - db

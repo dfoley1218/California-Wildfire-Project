@@ -26,10 +26,7 @@ jobs:
           --health-retries 5
 
     env:
-      DB_USER: postgres
-      DB_PASSWORD: test
-      DB_HOST: localhost
-      DB_NAME: wildfire_db
+      DATABASE_URL: postgresql+psycopg2://postgres:test@localhost:5432/wildfire_db
 
     steps:
       - uses: actions/checkout@v4
