@@ -197,6 +197,8 @@ Then open the interactive docs:
 
 ## The API
 
+**Live:** `https://california-wildfire-project.onrender.com` — try the interactive docs at [**`/docs`**](https://california-wildfire-project.onrender.com/docs). *(Hosted on Render's free tier; the first request after a period of inactivity may take ~30–50s while the service wakes.)*
+
 Base URL (local): `http://127.0.0.1:8000`
 
 | Method | Endpoint | Description |
