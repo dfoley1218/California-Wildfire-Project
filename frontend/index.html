@@ -332,7 +332,10 @@
         <input type="range" id="year-max" min="2018" max="2025" step="1" value="2025" aria-label="Latest year">
       </div>
     </div>
-
+      <div class="control-group" id="checkbox-group">
+      <label for="elevation-toggle" class="panel-label">Elevation</label>
+      <input type="checkbox" id="elevation-toggle">
+    </div>
     <button id="reset-btn" type="button">Reset</button>
   </div>
 
@@ -420,6 +423,25 @@
           'line-opacity': 0.8
         }
       });
+      map.addSource('elevation', {
+        type: 'raster',
+        tiles: [
+          'http://localhost:8001/cog/tiles/WebMercatorQuad/{z}/{x}/{y}?url=https%3A%2F%2Fdata.danielfoley.dev%2Fdixie_elevation_cog.tif&tilesize=512&rescale=979,2232&colormap_name=terrain'
+        ],
+        tileSize: 512,
+        minzoom: 8,
+        maxzoom: 14,
+        // bounds are specific to Dixie fire only for demonstration purposes.
+        bounds: [-121.54231481476, 39.860092592005, -120.186574072561, 40.7844444448513]
+      });
+      map.addLayer({
+        id: 'elevation-layer',
+        type:'raster',
+        source:'elevation',
+        layout: {
+          visibility: 'none'
+        }
+      })
 
       // --- filter controls (acreage + year range), live count, reset ---
       const acreageSlider = document.getElementById('acreage-slider');
@@ -429,6 +451,11 @@
       const yearValue = document.getElementById('year-value');
       const yearFill = document.getElementById('year-fill');
       const countValue = document.getElementById('count-value');
+      const elevationToggle = document.getElementById('elevation-toggle');
+      elevationToggle.addEventListener('change', () => {
+        const visibility = elevationToggle.checked ? 'visible' : 'none';
+        map.setLayoutProperty('elevation-layer', 'visibility', visibility);
+      });
       const resetBtn = document.getElementById('reset-btn');
 
       const TOTAL_FIRES = map.querySourceFeatures('fires').length;
