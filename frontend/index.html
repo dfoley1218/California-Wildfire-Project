@@ -123,6 +123,54 @@
     }
     .control-group:last-child { border-right: none; }
 
+    /* small hover/focus tooltip on the elevation toggle's info icon */
+    .info-icon {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      border: 1px solid var(--text-muted);
+      color: var(--text-muted);
+      font-size: 9px;
+      font-style: italic;
+      cursor: help;
+      user-select: none;
+    }
+    .info-icon:hover, .info-icon:focus-visible {
+      border-color: var(--accent);
+      color: var(--accent);
+      outline: none;
+    }
+    .info-tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 190px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: normal;
+      line-height: 1.4;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+      z-index: 2;
+    }
+    .info-icon:hover .info-tooltip,
+    .info-icon:focus-visible .info-tooltip {
+      opacity: 1;
+    }
+
     /* fire count readout — the summary stat */
     #count-readout {
       align-items: flex-start;
@@ -333,7 +381,12 @@
       </div>
     </div>
       <div class="control-group" id="checkbox-group">
-      <label for="elevation-toggle" class="panel-label">Elevation</label>
+      <div class="slider-row">
+        <label for="elevation-toggle" class="panel-label">Elevation</label>
+        <span class="info-icon" tabindex="0">i
+          <span class="info-tooltip">Elevation tiles are rendered by TiTiler running locally in Docker. This toggle only works on the developer's machine while that container is running.</span>
+        </span>
+      </div>
       <input type="checkbox" id="elevation-toggle">
     </div>
     <button id="reset-btn" type="button">Reset</button>
