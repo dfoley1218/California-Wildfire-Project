@@ -1,0 +1,70 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [],
+  "id": "fires-2022",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -114.43389803349054,
+          32.56194000033905
+        ],
+        [
+          -114.43389803349054,
+          41.9770413214314
+        ],
+        [
+          -123.99742628195948,
+          41.9770413214314
+        ],
+        [
+          -123.99742628195948,
+          32.56194000033905
+        ],
+        [
+          -114.43389803349054,
+          32.56194000033905
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    -123.99742628195948,
+    32.56194000033905,
+    -114.43389803349054,
+    41.9770413214314
+  ],
+  "properties": {
+    "fire_count": 306,
+    "datetime": "2022-01-01T00:00:00Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json"
+    }
+  ],
+  "assets": {
+    "fires": {
+      "href": "F:/GeoPandas Projects/ca-wildfire-project/data/stac_assets/fires_2022.geojson",
+      "type": "application/geo+json",
+      "roles": [
+        "data"
+      ]
+    }
+  },
+  "collection": "cal-fire-perimeters"
+}

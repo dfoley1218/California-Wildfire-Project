@@ -1,0 +1,674 @@
+{
+  "type": "Collection",
+  "id": "cal-fire-perimeters",
+  "stac_version": "1.1.0",
+  "description": "CAL FIRE historical fire perimeters, grouped by year",
+  "links": [
+    {
+      "rel": "root",
+      "href": "./collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2025/fires-2025.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2024/fires-2024.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2023/fires-2023.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2022/fires-2022.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2021/fires-2021.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2020/fires-2020.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2019/fires-2019.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2018/fires-2018.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2017/fires-2017.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2016/fires-2016.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2015/fires-2015.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2014/fires-2014.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2013/fires-2013.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2012/fires-2012.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2011/fires-2011.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2010/fires-2010.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2009/fires-2009.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2008/fires-2008.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2007/fires-2007.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2006/fires-2006.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2005/fires-2005.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2004/fires-2004.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2003/fires-2003.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2002/fires-2002.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2001/fires-2001.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-2000/fires-2000.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1999/fires-1999.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1998/fires-1998.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1997/fires-1997.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1996/fires-1996.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1995/fires-1995.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1994/fires-1994.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1993/fires-1993.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1992/fires-1992.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1991/fires-1991.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1990/fires-1990.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1989/fires-1989.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1988/fires-1988.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1987/fires-1987.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1986/fires-1986.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1985/fires-1985.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1984/fires-1984.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1983/fires-1983.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1982/fires-1982.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1981/fires-1981.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1980/fires-1980.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1979/fires-1979.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1978/fires-1978.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1977/fires-1977.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1976/fires-1976.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1975/fires-1975.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1974/fires-1974.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1973/fires-1973.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1972/fires-1972.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1971/fires-1971.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1970/fires-1970.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1969/fires-1969.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1968/fires-1968.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1967/fires-1967.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1966/fires-1966.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1965/fires-1965.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1964/fires-1964.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1963/fires-1963.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1962/fires-1962.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1961/fires-1961.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1960/fires-1960.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1959/fires-1959.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1958/fires-1958.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1957/fires-1957.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1956/fires-1956.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1955/fires-1955.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1954/fires-1954.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1953/fires-1953.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1952/fires-1952.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1951/fires-1951.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1950/fires-1950.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1949/fires-1949.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1948/fires-1948.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1947/fires-1947.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1946/fires-1946.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1945/fires-1945.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1944/fires-1944.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1943/fires-1943.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1942/fires-1942.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1941/fires-1941.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1940/fires-1940.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1939/fires-1939.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1938/fires-1938.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1937/fires-1937.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1936/fires-1936.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1935/fires-1935.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1934/fires-1934.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1933/fires-1933.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1932/fires-1932.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1931/fires-1931.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1930/fires-1930.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1929/fires-1929.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1928/fires-1928.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1927/fires-1927.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1926/fires-1926.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1925/fires-1925.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1924/fires-1924.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1923/fires-1923.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1922/fires-1922.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1921/fires-1921.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1920/fires-1920.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1919/fires-1919.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1918/fires-1918.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1917/fires-1917.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1916/fires-1916.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1915/fires-1915.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1914/fires-1914.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1913/fires-1913.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1912/fires-1912.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1911/fires-1911.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1910/fires-1910.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1909/fires-1909.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1908/fires-1908.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1907/fires-1907.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1906/fires-1906.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1905/fires-1905.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1903/fires-1903.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1902/fires-1902.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1900/fires-1900.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1898/fires-1898.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1896/fires-1896.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1895/fires-1895.json",
+      "type": "application/geo+json"
+    },
+    {
+      "rel": "item",
+      "href": "./fires-1878/fires-1878.json",
+      "type": "application/geo+json"
+    }
+  ],
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -124.40168835197358,
+          32.53090063009823,
+          -114.13638881750734,
+          42.62706986333577
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "1878-01-01T00:00:00Z",
+          "2025-01-01T00:00:00Z"
+        ]
+      ]
+    }
+  },
+  "license": "proprietary"
+}

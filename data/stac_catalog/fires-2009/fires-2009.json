@@ -1,0 +1,70 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "stac_extensions": [],
+  "id": "fires-2009",
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -114.36075905875458,
+          32.626421923105156
+        ],
+        [
+          -114.36075905875458,
+          41.9221999897801
+        ],
+        [
+          -124.39436601261417,
+          41.9221999897801
+        ],
+        [
+          -124.39436601261417,
+          32.626421923105156
+        ],
+        [
+          -114.36075905875458,
+          32.626421923105156
+        ]
+      ]
+    ]
+  },
+  "bbox": [
+    -124.39436601261417,
+    32.626421923105156,
+    -114.36075905875458,
+    41.9221999897801
+  ],
+  "properties": {
+    "fire_count": 254,
+    "datetime": "2009-01-01T00:00:00Z"
+  },
+  "links": [
+    {
+      "rel": "root",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "collection",
+      "href": "../collection.json",
+      "type": "application/json"
+    },
+    {
+      "rel": "parent",
+      "href": "../collection.json",
+      "type": "application/json"
+    }
+  ],
+  "assets": {
+    "fires": {
+      "href": "F:/GeoPandas Projects/ca-wildfire-project/data/stac_assets/fires_2009.geojson",
+      "type": "application/geo+json",
+      "roles": [
+        "data"
+      ]
+    }
+  },
+  "collection": "cal-fire-perimeters"
+}
